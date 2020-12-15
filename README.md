@@ -11,3 +11,7 @@ The booster draft format is a widely popular format in both the physical and dig
 [Full Report](report/report.pdf)
 
 [Project Scripts](scripts/)
+
+## Presentation
+
+[![Presentation](https://img.youtube.com/vi/ON8Aaa8GbUw/maxresdefault.jpg)](https://youtu.be/ON8Aaa8GbUw)
