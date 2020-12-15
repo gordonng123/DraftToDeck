@@ -1,0 +1,310 @@
+\def\year{2021}\relax
+%File: formatting-instructions-latex-2021.tex
+%release 2021.2
+\documentclass[letterpaper]{article} % DO NOT CHANGE THIS
+\usepackage{aaai21}  % DO NOT CHANGE THIS
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{times}  % DO NOT CHANGE THIS
+\usepackage{helvet} % DO NOT CHANGE THIS
+\usepackage{courier}  % DO NOT CHANGE THIS
+\usepackage[hyphens]{url}  % DO NOT CHANGE THIS
+\usepackage{graphicx} % DO NOT CHANGE THIS
+\urlstyle{rm} % DO NOT CHANGE THIS
+\def\UrlFont{\rm}  % DO NOT CHANGE THIS
+\usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\frenchspacing  % DO NOT CHANGE THIS
+\setlength{\pdfpagewidth}{8.5in}  % DO NOT CHANGE THIS
+\setlength{\pdfpageheight}{11in}  % DO NOT CHANGE THIS
+%\nocopyright
+%PDF Info Is REQUIRED.
+% For /Author, add all authors within the parentheses, separated by commas. No accents or commands.
+% For /Title, add Title in Mixed Case. No accents or commands. Retain the parentheses.
+\pdfinfo{
+/Title (AAAI Press Formatting Instructions for Authors Using LaTeX -- A Guide)
+/Author (AAAI Press Staff, Pater Patel Schneider, Sunil Issar, J. Scott Penberthy, George Ferguson, Hans Guesgen, Francisco Cruz, Marc Pujol-Gonzalez)
+/TemplateVersion (2021.2)
+} %Leave this
+% /Title ()
+% Put your actual complete title (no codes, scripts, shortcuts, or LaTeX commands) within the parentheses in mixed case
+% Leave the space between \Title and the beginning parenthesis alone
+% /Author ()
+% Put your actual complete list of authors (no codes, scripts, shortcuts, or LaTeX commands) within the parentheses in mixed case.
+% Each author should be only by a comma. If the name contains accents, remove them. If there are any LaTeX commands,
+% remove them.
+
+% DISALLOWED PACKAGES
+% \usepackage{authblk} -- This package is specifically forbidden
+% \usepackage{balance} -- This package is specifically forbidden
+% \usepackage{color (if used in text)
+% \usepackage{CJK} -- This package is specifically forbidden
+% \usepackage{float} -- This package is specifically forbidden
+% \usepackage{flushend} -- This package is specifically forbidden
+% \usepackage{fontenc} -- This package is specifically forbidden
+% \usepackage{fullpage} -- This package is specifically forbidden
+% \usepackage{geometry} -- This package is specifically forbidden
+% \usepackage{grffile} -- This package is specifically forbidden
+% \usepackage{hyperref} -- This package is specifically forbidden
+% \usepackage{navigator} -- This package is specifically forbidden
+% (or any other package that embeds links such as navigator or hyperref)
+% \indentfirst} -- This package is specifically forbidden
+% \layout} -- This package is specifically forbidden
+% \multicol} -- This package is specifically forbidden
+% \nameref} -- This package is specifically forbidden
+% \usepackage{savetrees} -- This package is specifically forbidden
+% \usepackage{setspace} -- This package is specifically forbidden
+% \usepackage{stfloats} -- This package is specifically forbidden
+% \usepackage{tabu} -- This package is specifically forbidden
+% \usepackage{titlesec} -- This package is specifically forbidden
+% \usepackage{tocbibind} -- This package is specifically forbidden
+% \usepackage{ulem} -- This package is specifically forbidden
+% \usepackage{wrapfig} -- This package is specifically forbidden
+% DISALLOWED COMMANDS
+% \nocopyright -- Your paper will not be published if you use this command
+% \addtolength -- This command may not be used
+% \balance -- This command may not be used
+% \baselinestretch -- Your paper will not be published if you use this command
+% \clearpage -- No page breaks of any kind may be used for the final version of your paper
+% \columnsep -- This command may not be used
+% \newpage -- No page breaks of any kind may be used for the final version of your paper
+% \pagebreak -- No page breaks of any kind may be used for the final version of your paperr
+% \pagestyle -- This command may not be used
+% \tiny -- This is not an acceptable font size.
+% \vspace{- -- No negative value may be used in proximity of a caption, figure, table, section, subsection, subsubsection, or reference
+% \vskip{- -- No negative value may be used to alter spacing above or below a caption, figure, table, section, subsection, subsubsection, or reference
+
+\setcounter{secnumdepth}{0} %May be changed to 1 or 2 if section numbers are desired.
+
+% The file aaai21.sty is the style file for AAAI Press
+% proceedings, working notes, and technical reports.
+%
+
+% Title
+
+% Your title must be in mixed case, not sentence case.
+% That means all verbs (including short verbs like be, is, using,and go),
+% nouns, adverbs, adjectives should be capitalized, including both words in hyphenated terms, while
+% articles, conjunctions, and prepositions are lower case unless they
+% directly follow a colon or long dash
+
+\title{Deck-Building Methods for the \textit{Magic: The Gathering} Booster Draft Format}
+\author{
+    %Authors
+    % All authors must be in the same font size and format.
+    Nathaniel Gordon\textsuperscript{\rm 1}
+    \\
+}
+\affiliations{
+    %Afiliations
+    \textsuperscript{\rm 1}Northeastern University\\
+
+    360 Huntington Ave\\
+    Boston, MA 02115\\
+    gordon.n@northeastern.edu
+}
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+
+The booster draft format is a widely popular format in both the physical and digital variations of popular trading card game Magic: The Gathering. In this paper, the deck-construction component of the booster draft play format is formatted as a combinatorial optimization problem. Both an evaluation function and several heuristic-based optimization schemes for generating solutions the problem are proposed. Experimentally-generated decks produced by applying annealing and genetic evolution methods to human-generated draft pools were shown outperform a random control in a variety of critical metrics, including optimal mana cost curve and expert-informed card rankings. 
+
+\end{abstract}
+
+\section{Introduction}
+
+The rise in popularity of the trading card game \textit{Magic: The Gathering} (MTG) has only been accelerated by the 2018 release of \textit{Magic: The Gathering Arena}, a digital version of the classic product. While publisher Wizards of The Coast (WotC) has not released official player count data, popular streaming website Twitch reported an average monthly viewer count of 10 million just a year after the game's release, already nearing half the viewership of popular competitor \textit{Hearthstone} \cite{espn20}.
+
+\textit{Arena's} popularity has spurred interest in the development of autonomous agents, or `bots' to autonomously play MTG. From the perspective of algorithm design, the implementation of such a bot requires the development of agents to solve several particular problems, each presenting different challenges. 
+
+One of \textit{Arena's} most popular game modes is \textit{booster draft}, consists of three main phases:
+
+\begin{enumerate}
+    \item \textit{Drafting:} Players take turns drafting from randomized packs of cards. Each player's selections contribute to their \textit{draft pool}, the selection of cards they will be limited to in subsequent phases.
+    \item \textit{Deck-building:} Players select a subset of cards from their draft pool to construct a deck to be used in the final phase.
+    \item \textit{Dueling:} Players are paired up to compete in a battle using the decks they have constructed. Typically, winners are determined using the player's record after competing in four or eight duels against other players.
+\end{enumerate}
+
+In this paper, several methods for constructing high-performance decks during the deck-building phase of MTG booster draft is proposed. To achieve this, a evaluation function is developed in order to generate an estimate of deck quality. Then, this evaluation function is applied to several combinatorial optimization methods to produce theoretically highly-performant decks. Finally, an experiment is run to compare these methods with regard to how they satisfy various metrics of the evaluation function.
+
+\section{Background}
+
+The rules of MTG vary widely across the various official and unofficial play formats for the game. The key rules of booster draft will define the approach to optimizing deck-building for this particular format.
+
+A player or autonomous agent attempting to construct a deck for a booster draft is given a draft pool. This pool consists of 45 cards that were selected during the drafting phase of gameplay. Each draft in the pool is likely selected with some overarching philosophy, which could be influenced by the other cards in the pack, knowledge of competitor's philosophies, or personal preference. Furthermore, all 45 off the pool's cards belong to a particular MTG \textit{set}. A set typically consists of around 300 card types, and is designed by WotC to be a balanced card ecosystem for MTG play to occur.
+
+To compete in the dueling phase of a booster draft, a deck of no less than 40 cards must be constructed. These cards may be selected from either 1), the player's draft pool or 2), an unlimited supply of the 5 basic land cards. While there is no limit to maximum deck size (in physical formats, the ability for the deck to be shuffled governs the theoretical maximum), the player is encouraged to opt for the minimum size of 40 to reduce variance in their deck's performance when cards are drawn randomly during the dueling phase. Additionally, no more than 4 copies of any card (besides basic lands) may appear in the deck. This is extremely unlikely to be a relevant rule in booster draft, however, as a player is in control of what cards they add to the draft pool.
+
+A final noteworthy constraint to the booster draft format is the limited time allowed for deck construction to occur. While the time allowance for this phase has varied, an objective for this paper will be to generate methods that reliably terminate in under one minute.
+
+\section{Related Work}
+
+Deck-building in trading card games is often framed as a combinatorial optimization problem. Common approaches to solving such a problem include heuristic methods, metaheuristic search methods, and sequential decision making approaches. Some heuristic searches are governed by the rigorous rules and synergy rankings present in the cards \cite{stiegler16}. Others choose to use human-generated rankings to evaluate the popularity of each card, a potential indicator of how likely it should be included in the deck \cite{karsten17}. Alternatively, metaheuristic search methods rely on simulation to generate win-rate statistics for proposed decks. An implementation of this method with a genetic algorithm is presented, but the simulation time required to perform deck analysis makes them untenable for the time-constraints presented in booster draft \cite{merelo16}. Another approach is to formulate the deck construction process as a sequential decision-making problem such as an Markov Decision Problem (MDP). While this method has been shown to run in real-time scenarios, it relies on lengthy training times in advance \cite{el-nasr18}. The comparatively smaller optimization space and lesser reliance on synergy present in the booster draft format makes many of the more complex and computationally intensive methods ill-suited to the task.
+
+\section{Deck Evaluation}
+
+\subsection{Card Features}
+
+The many cards of MTG are possess notorious levels of depth in terms of the rules implications present on any given card. Cards that appear identical in many categories may differ in critical, yet subtle ways that may cause them to be drawn to completely different deck-building archetypes. However, the limited number of card types available in the booster draft format (and the additional limits of the draft pool) make powerful synergies between cards much less likely to occur. Consequently, the deck-evaluation scheme proposed will not examine multi-card synergies beyond a few critical metrics, but will instead place greater emphasis on the power of each card in the deck independently.
+
+\subsubsection{Color}
+
+MTG cards belong to one (or none) of the five colors of magic: black, blue, green, red, and white. In order to play cards of a given color, mana sources of the corresponding color, most often land cards, must be present. 
+
+In the deck construction process, the player must balance including the most powerful cards from the draft pool in their deck while not diluting the deck with an excess of colors to supply mana for. A general rule of booster draft deck construction is to only select cards belonging to exactly two of the colors, with limited exceptions in specific sets where drawing from three colors is acceptable, but not ideal \cite{karsten18}. 
+
+\subsubsection{Land-to-Spell Ratio} In a similar vein to color-count issues, the balance between land cards (which produce mana) and spells (which require mana to be played) is a critical concern. The long-time MTG wisdom of playing 17 lands and 23 spells is supported by a statistical analysis including both basic probabilistic reasoning and a regression applied to top-performing decks \cite{karsten17a}.
+
+\subsubsection{Mana Cost}
+
+While closely tied to color, total mana cost is also a pertinent consideration when constructing a deck. While high mana cost cards are typically more likely to influence the outcome of a game, MTG limits the number of lands cards a player may play per turn to one, making it challenging to play these powerful cards early into a game.
+
+The deck-building consideration is the following: a deck with a lack of high mana cost cards will be at a power disadvantage as the game goes on, while an overabundance may increase vulnerability early in the game. To address this, a \textit{curve} metric that describes the ideal number of cards with each mana cost to use in a deck has been crafted \cite{karsten14}.
+
+\subsubsection{Power Ranking}
+
+With the much lower impact of synergistic interactions in the booster draft format, the power assigned to a given card for evaluation purposes will not depend on other cards in the deck. Instead, card power will be determined as an aggregation of human-assigned rankings. In particular, rankings were sourced from MTG veteran pro player Luis Scott-Vargas and crowd-sourced ranking system Draftaholics Anonymous \cite{scott_vargas18} \cite{p1p118}. These rankings are scaled comparatively such that the best card in the set is worth approximately 2.5 times that of the lowest-ranked card.
+
+\subsection{Evaluation Function}
+
+The metrics used to evaluate the strength of a deck in regards to each card feature can be combined to form a generalized deck-evaluation function. However, one notable metric is color, as non-adherence to the optimal two-color policy is massively detrimental to the deck's performance. Rather than scoring the deck by a color-based metric, the draft pool will be pre-processed to guarantee that cards from only two colors remain. This is done in two steps: first, all cards that belong to a color that is represented by 6 or fewer cards are immediately removed. Then, the color with the least sum of power over all cards that represent it is eliminated until only 2 colors remain. This procedure is outlined in Algorithm 1. Because most drafters are aware of the two-color policy and choose their draft picks accordingly, this trimming of the draft pool will rarely have any effect on the optimal outcome.
+
+\begin{algorithm}
+\SetAlgoLined
+\KwResult{Trimmed draft pool}
+ colors = {B, U, G, R, W}\;
+ pool P\;
+ \For {color in(colors)} {
+    \If{count(P, color) $<=$ 6}{
+         remove(P, color)\;
+         remove(colors, color)\;
+    }
+ }
+ \While{len(colors) $>$ 2}{
+    weakest\_color = argmin(count(P, color))\;
+    remove(P, weakest\_color)\;
+    remove(colors, weakest\_color)\;
+  }
+ \caption{Draft Pool Color Pre-Processing}
+\end{algorithm}
+
+Similarly, the 17-land policy will also treated as a strict constraint in the framing of the combinatorial optimization problem. In particular, the feature vector will be defined as having 23 dimensions, corresponding to the 23 spells to be chosen for the deck.
+
+With fixed constraints handled in the pre-processing phase, the evaluation function only needs to be a function of two metrics: fit to the mana cost curve and total card power.
+
+To evaluate a deck's fit to the optimal curve, the number of cards that exceed the curve limit for a particular mana cost will be totaled, and the curve score will be determined as the percent of non-violating cards in the deck. For the purposes of this calculation, all cards with mana cost six or greater will be considered to have a cost of 6. If $D(x)$ is the number of cards in the deck and $C(x)$ the desired curve for mana cost $x$, the the curve score can be determined as follows:
+
+\begin{equation}
+    CurveScore(D) = \frac{\sum_{i=1}^6 D(i)-C(i)*H(D(i)-C(i))}{\sum_{i=1}^6 D(i)}
+\end{equation}
+
+Please note that H(n) is the unit step function in this application. Furthermore, this scoring scheme has been left intentionally lenient, as decks do not need to perfectly comply with the optimal curve policy to excel.
+
+The calculation of the overall utility of a proposed deck is straightforward once the curve score and sum of independent card scores, denoted $CardScore$ have been calculated:
+
+\begin{equation}
+    Utility(D)=CurveScore(D)*CardScore(D)
+\end{equation}
+
+In other words, the total card utility of a deck receives a penalty equal to the percentage of cards that do not comply with the optimal curve policy.
+
+\section{Optimization Methods}
+
+Two heuristic optimization methods will examined for use with the defined evaluation function.
+
+\subsection{Simulated Annealing}
+
+Simulated annealing is an optimization method in the `dual-phase' family of algorithms. That is, it exploits the state space to approach a balance between global and local optimization methods. The annealing algorithm relies on a running temperature variable to dictate its willingness to accept a sub-optimal solution in hopes that it is ultimately moving towards a global maximum.
+
+Different annealing schedules have been developed to be well-suited to particular problems. For the purposes of this project, a schedule that utilizes a distorted Cauchy-Lorentz schedule was selected \cite{scipy20}. An overview of the simulated annealing procedure can be found in Algorithm 2. 
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwResult{Cooled Solution}
+ temperature T\;
+    temp\_threshold\;
+    cooling\_factor $\alpha$\;
+    random solution S\;
+    \While{T $>$ temp\_threshold}{
+ \For{inner\_reps\_count}{
+  solution S' near(S)\;
+  $\delta = cost(S')-cost(S)$\;
+  \eIf{$\delta <0$}{
+   S = S'\;
+   }{
+   \If{prob(exp($\delta/T$)}{
+    S = S'\;
+   }
+  }
+ }
+ $T=\alpha T$
+ }
+ \caption{Simulated Annealing}
+\end{algorithm}
+
+\subsection{Genetic Algorithm}
+
+Genetic evolution algorithms, or more simply genetic algorithms (GAs) have been used as both primary heuristic and metaheuristic optimizers to construct decks for MTG \cite{bjorke17}. However, these efforts utilize simulated gameplay to evaluate the fitness of a particular deck, a method which is untenable in real-time solutions without shifting the computational effort to a lengthy training period \cite{el-nasr18}. In this implementation, deck simulation is forgone in favor of the previously defined evaluation method, which combines optimal deck policies with expert analysis on each member card.
+
+The GA functions by randomly initializing a number of initial solutions, known as the population. The fitness of each population member is then evaluated. The highest-fitness solutions are then combined in a process called \textit{crossover}, where the underlying traits, or genes of each pair of solutions are spliced together. To introduce exploration of the search space into the process, the crossover phase is followed by a mutation phase, where random traits are introduced into the population. This process iterates until the population converges to a highly-fit solution. Like simulated annealing, this method does not guarantee finding a globally optimal solution \cite{scipy20a}. Pseudocode for this high-level procedure can be found in Algorithm 3.
+
+\begin{algorithm}
+\SetAlgoLined
+\KwResult{Converged solution}
+    random population P\;
+    \While{not converged(P)}{
+        fitness\_scores = fitness(P)\;
+        best\_solutions = select(P, fitness\_scores)\;
+        crossover(best\_solutions)\;
+        mutate(best\_solutions)\;
+        P = best\_solutions\;
+    }
+\caption{High-Level Genetic Evolution}
+\end{algorithm}
+
+\section{Experiments}
+
+\subsection{Data}
+
+To supply our experiment with a database for card statistic lookup, data on every card from the MTG set \textit{Core Set 2019} was downloaded from the regularly-updated website Scryfall.com using their API \cite{scryfall}. This database was then augmented with the addition of aggregate card rankings for each card in the set.
+
+The deck-building phase also requires a draft pool as an input. Over two million sample draft pools collected from MTG arena players were downloaded from the publicly available database at draftsim.com \cite{draftsim}. 
+
+\subsection{Procedure}
+
+An experiment was run to compare the performance of three potential deck-building methods: simulated annealing, genetic evolution, and random selection. The simulated annealing and genetic evolution methods were implemented using the open-source library SciPy. An experimental trial consisted of running the three methods on a randomly selected sample draft pool and comparing the curve fit, total card power, and utility score of the solutions each method produced. Additionally, the deck lists produced from each method were stored for further analysis.
+
+\subsection{Results and Analysis}
+
+A experiment was run on 1500 human-constructed draft pools arbitrarily selected from the Draftsim database. In addition to tracking the utility of their selection, the curve fit and net card value metrics were also recorded for each of the three methods. The averaged results over the 1500 trials can be found in Table 1. Each trial was run in roughly 7 seconds of CPU time on consumer-grade hardware.
+
+Unsurprisingly, the random method's average card value was 1572 points, only slightly above the set's average card value of 1570. Less predictably, the random method built decks that were on average more than 80\% compliant with the curve policy. This is due to the tendency of human drafters to construct their pools with a curve distribution in mind, and will hesitate to select an overabundance of either costly or cheap cards. Moreover, this curve is roughly reflected in the base distribution of card costs in the set.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{c c c c}
+\hline
+\textbf{Method}&Curve Fit&Avg. Card Value&Utility \\\hline\\
+\textbf{Annealing} & 0.964 & 1659 & 36785 \\\\
+\textbf{Genetic} & 0.936 & 1589 & 34214 \\\\
+\textbf{Random} & 0.838 & 1572 & 30328  \\\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Performance metrics for the three combinatorial optimization methods averaged over 1500 trials}
+\end{table}
+
+The decks constructed by the genetic algorithm had average card values only 17 points higher than those generated randomly, but surpassed the random method significantly in regard to their curve fit. This is indicative of the method not fully exploring the solution space to optimize card selection (as the average card value is not meaningfully greater than that of random selection), yet effectively prioritizing the curve metric.
+
+The annealing method had the strongest performance across all metrics, with an average card pick 90 points higher than the genetic method. The ability to maintain a high adherence to the curve policy while prioritizing above-average cards displays the method's ability to effectively explore the solution space.
+
+With additional tuning, the genetic algorithm may be able to approach the annealing method in terms of deck quality. Increasing population size and mutation prevalence may both help the method explore the search space more fully, an aspect that it appears to be lacking in due to its lower card pick value. However, the genetic method is much slower than annealing and grows linearly with both population size and generations before convergence, indicating that solution quality may come at a significant loss in speed.
+
+\section{Conclusion}
+
+Several heuristic methods for MTG booster draft deck construction have been presented and shown to generate performant results in seconds of run time. These approaches offer solutions to close the gap between drafting and dueling in simulated booster draft tournament play. Further trials involving simulated play would be necessary to fully explore how effective the decks crafted from these heuristic methods are, which may be the subject of future work. Moreover, statistical analysis of any differing trends in human and bot drafting may reveal oversights stemming from this project's reliance on human-generated draft pools.
+
+\bibliography{refs.bib}
+
+\end{document}
